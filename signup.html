@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Digischool | Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+        body { margin: 0; background: linear-gradient(to right, #fae3e6, transparent); display: flex; justify-content: center; padding: 10px; }
+        .container { background: linear-gradient(to right, #fdebed, transparent); width: 100%; max-width: 480px; padding: 20px; border-radius: 10px; }
+        h3 { text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #555; margin-bottom: 15px; font-size: 12px; }
+        label { font-size: 10px; font-weight: 600; margin-top: 10px; display: block; }
+        input, select { width: 100%; padding: 10px; margin-top: 6px; border-radius: 8px; border: 1px solid #ddd; font-size: 12px; color: gray; outline: none; }
+        input:focus, select:focus { border: 2px solid #1e90ff; }
+        button { width: 100%; background: #0288d1; color: #fff; border: none; padding: 7px; border-radius: 8px; font-size: 12px; margin-top: 25px; cursor: pointer; }
+        button:hover { background: #0277bd; }
+        .login { text-align: center; margin-top: 15px; font-size: 12px; color: gray; }
+        .login a { color: #0288d1; text-decoration: none; border-bottom: 1px solid rgba(0,123,255,0.2); font-weight: 100; }
+        .login a:hover{ border-bottom-color: #007bff; }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
+        .field label { display: block; margin-bottom: 6px; font-size: 14px; }
+        .field select, .field input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #bbb; font-size: 10px; }
+        body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(to right, #fae3e6, transparent);
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    background: linear-gradient(to right, #fdebed, transparent);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 12px 20px;
+    background: #0288d1;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #0277bd;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+#successPopup {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4caf50;
+    color: #fff;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    z-index: 9999;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h3>Create an account</h3>
+    <div class="subtitle">Enter your details below to create your account</div>
+<form id="schoolForm">
+
+    <label>School Name</label>
+    <input type="text" placeholder="School Name" required>
+
+    <label>School Email address</label>
+    <input type="email" placeholder="email@example.com" required>
+
+    <label>Phone Number</label>
+    <input type="tel" placeholder="Phone Number" inputmode="numeric" pattern="[0-9]*" maxlength="10" required>
+
+    <div class="form-grid">
+        <div class="field">
+            <label>Institution Type</label>
+            <select required>
+                <option value="" selected disabled hidden>Select Institution Type</option>
+                <option value="private">Private School</option>
+                <option value="public">Public School</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Institution Level</label>
+            <select required>
+                <option value="" selected disabled hidden>Select Institution Level</option>
+                <option value="primary">Primary School</option>
+                <option value="secondary">Secondary School</option>
+                <option value="tertiary">Tertiary</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>County</label>
+            <select required>
+                <option value="" selected disabled hidden>Choose county</option><option>Baringo</option>
+<option>Bomet</option>
+<option>Bungoma</option>
+<option>Busia</option>
+<option>Elgeyo-Marakwet</option>
+<option>Embu</option>
+<option>Garissa</option>
+<option>Homa Bay</option>
+<option>Isiolo</option>
+<option>Kajiado</option>
+<option>Kakamega</option>
+<option>Kericho</option>
+<option>Kiambu</option>
+<option>Kilifi</option>
+<option>Kirinyaga</option>
+<option>Kisii</option>
+<option>Kisumu</option>
+<option>Kitui</option>
+<option>Kwale</option>
+<option>Laikipia</option>
+<option>Lamu</option>
+<option>Machakos</option>
+<option>Makueni</option>
+<option>Mandera</option>
+<option>Marsabit</option>
+<option>Meru</option>
+<option>Migori</option>
+<option>Mombasa</option>
+<option>Murang'a</option>
+<option>Nairobi</option>
+<option>Nakuru</option>
+<option>Nandi</option>
+<option>Narok</option>
+<option>Nyamira</option>
+<option>Nyandarua</option>
+<option>Nyeri</option>
+<option>Samburu</option>
+<option>Siaya</option>
+<option>Taita-Taveta</option>
+<option>Tana River</option>
+<option>Tharaka-Nithi</option>
+<option>Trans Nzoia</option>
+<option>Turkana</option>
+<option>Uasin Gishu</option>
+<option>Vihiga</option>
+<option>Wajir</option>
+<option>West Pokot</option>
+
+                <!-- Add remaining counties -->
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Product</label>
+            <select required>
+                <option value="" selected disabled hidden>Select Product</option>
+                <option value="fees">Fee Management</option>
+                <option value="exams">Exam Analysis</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Students Population</label>
+            <select required>
+                <option value="" selected disabled hidden>Choose Students Population</option>
+                <option>Up to 500 Students</option>
+                <option>Up to 1000 Students</option>
+                <option>Up to 1500 Students</option>
+                <option>2000 and Above Students</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Registration Code</label>
+            <input type="text" id="regCode" placeholder="enter code" required>
+        </div>
+    </div>
+
+    <button type="submit">Create account</button>
+</form>
+
+<!-- Success Popup -->
+<div id="successPopup">
+    School account created successfully!
+</div>
+
+    <div class="login">
+        Already have an account? <a href="./login.html">Log in</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById("schoolForm").addEventListener("submit", function(e) {
+    e.preventDefault(); // Prevent default form submission
+
+    const form = e.target;
+    const regCode = document.getElementById("regCode").value.trim();
+
+    // Strict validation for registration code
+    if (regCode !== "seeker") {
+        alert("enter the registration code");
+        return false;
+    }
+
+    // Gather all form data
+    const school = {
+        name: form[0].value.trim(),
+        email: form[1].value.trim(),
+        phone: form[2].value.trim(),
+        type: form[3].value,
+        level: form[4].value,
+        county: form[5].value,
+        product: form[6].value,
+        population: form[7].value,
+        code: regCode
+    };
+
+    // Save to localStorage
+    let schools = JSON.parse(localStorage.getItem("schools")) || [];
+    schools.push(school);
+    localStorage.setItem("schools", JSON.stringify(schools));
+
+    // Show custom popup
+    const popup = document.getElementById("successPopup");
+    popup.style.display = "block";
+
+    // Clear form
+    form.reset();
+
+    // After 6 seconds, hide popup and redirect
+    setTimeout(() => {
+        popup.style.display = "none";
+        window.location.href = "login.html";
+    }, 6000);
+});
+
+</script>
+</body>
+</html>

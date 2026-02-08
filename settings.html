@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Digischool | Settings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(to right, #fae3e6, transparent);
+}
+
+/* ===== HEADER ===== */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    padding: 15px 20px;
+    background: #0288d1;
+    color: #fff;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* ===== HAMBURGER ===== */
+.hamburger {
+    color: gray;
+    font-size: 26px;
+    cursor: pointer;
+    display: none;
+}
+
+/* ===== PAGE BODY ===== */
+.page {
+    display: flex;
+    min-height: calc(100vh - 60px);
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 240px;
+    background: #0288d1;
+    color: #fff;
+    padding: 20px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.sidebar h2 {
+    text-align: center;
+    color: #fdebed;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.sidebar a.active,
+.sidebar a:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* ===== MAIN ===== */
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+/* ===== SETTINGS CARD ===== */
+.card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    max-width: 600px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card h3 {
+    margin-bottom: 20px;
+    color: #0288d1;
+}
+
+/* ===== FORM ===== */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.save-btn {
+    background: #0288d1;
+    color: #fff;
+}
+
+.logout-btn {
+    background: #d32f2f;
+    color: #fff;
+    margin-left: 10px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+
+    .hamburger {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        height: calc(100vh - 60px);
+        transform: translateX(-100%);
+        z-index: 999;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .page {
+        flex-direction: row;
+    }
+
+    .main {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <span class="hamburger" onclick="toggleSidebar()">☰</span>
+    <span id="schoolName"></span> — Settings
+</header>
+
+<div class="page">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+        <h2>Digischool</h2>
+        <a href="user-dashboard.html">Dashboard</a>
+        <a href="#">Teachers</a>
+        <a href="#">Students</a>
+        <a href="#">Reports</a>
+        <a href="settings.html" class="active">Settings</a>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="card">
+            <h3>School Settings</h3>
+
+            <div class="form-group">
+                <p><strong>School Name:</strong> <span id="infoName"></span></p>
+                <label>School Name</label>
+                <input type="text" id="name">
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email">
+            </div>
+
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" id="phone">
+            </div>
+
+            <div class="form-group">
+                <label>County</label>
+                <input type="text" id="county">
+            </div>
+
+            <button class="save-btn" onclick="saveSettings()">Save Changes</button>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+    </main>
+
+</div>
+<script>
+    
+const currentSchool = JSON.parse(localStorage.getItem("currentSchool"));
+
+if (!currentSchool) {
+    location.href = "login.html";
+}
+
+// Fill info fields
+schoolName.textContent = currentSchool.name;
+infoName.textContent = currentSchool.name;
+
+name.value = currentSchool.name;
+email.value = currentSchool.email;
+phone.value = currentSchool.phone;
+county.value = currentSchool.county;
+
+// Save settings
+function saveSettings() {
+    // Update currentSchool object
+    currentSchool.name = name.value;
+    currentSchool.email = email.value;
+    currentSchool.phone = phone.value;
+    currentSchool.county = county.value;
+
+    // Save currentSchool in localStorage
+    localStorage.setItem("currentSchool", JSON.stringify(currentSchool));
+
+    // Update the schools array in localStorage
+    const schools = JSON.parse(localStorage.getItem("schools")) || [];
+    const index = schools.findIndex(s => s.email === currentSchool.email);
+    if (index !== -1) {
+        schools[index] = currentSchool;
+    } else {
+        schools.push(currentSchool);
+    }
+    localStorage.setItem("schools", JSON.stringify(schools));
+
+    // Optional: notify other tabs to update
+    localStorage.setItem("schoolUpdated", Date.now());
+
+    // Update info display
+    infoName.textContent = currentSchool.name;
+
+    alert("Settings updated successfully");
+}
+
+// Logout
+function logout() {
+    localStorage.removeItem("currentSchool");
+    location.href = "login.html";
+}
+
+// Hamburger toggle
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+}
+
+// Listen for changes in other tabs and update info dynamically
+window.addEventListener("storage", (event) => {
+    if (event.key === "schoolUpdated") {
+        const updatedSchool = JSON.parse(localStorage.getItem("currentSchool"));
+        schoolName.textContent = updatedSchool.name;
+        infoName.textContent = updatedSchool.name;
+        name.value = updatedSchool.name;
+        email.value = updatedSchool.email;
+        phone.value = updatedSchool.phone;
+        county.value = updatedSchool.county;
+    }
+});
+</script>
+
+
+</body>
+</html>

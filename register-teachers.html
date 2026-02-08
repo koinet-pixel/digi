@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digischool | Register Teacher</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #f4f6f8;
+}
+
+/* ===== HEADER ===== */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 13px 17px;
+    background: #0288d1;
+    color: #fff;
+}
+
+.hamburger {
+    font-size: 26px;
+    cursor: pointer;
+    display: none;
+}
+
+/* ===== LAYOUT ===== */
+.page {
+    display: flex;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 220px;
+    background: #1e3a8a;
+    padding-top: 20px;
+    position: fixed;
+    top: 60px;
+    bottom: 0;
+}
+
+.sidebar a,
+.dropdown-btn {
+    display: block;
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.sidebar a:hover,
+.dropdown-btn:hover {
+    background: #1d4ed8;
+}
+
+.dropdown-content {
+    display: none;
+    background: #2563eb;
+}
+
+.dropdown-content a {
+    padding-left: 40px;
+    font-size: 14px;
+}
+
+.dropdown-content a:hover {
+    background: #1e40af;
+}
+
+/* ===== MAIN ===== */
+.main {
+    margin-left: 220px;
+    padding: 30px;
+    width: 100%;
+}
+
+.container {
+    max-width: 800px;
+    background: #fff;
+    margin: auto;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #0288d1;
+    margin-bottom: 20px;
+}
+
+/* ===== FORM ===== */
+.teacher-form {
+    display: grid;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input, select {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #0288d1;
+}
+
+button {
+    padding: 12px;
+    background: #2e7d32;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #256428;
+}
+
+.form-message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.form-message.success { color: green; }
+.form-message.error { color: red; }
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+    .hamburger { display: block; }
+
+    .sidebar {
+        left: -100%;
+        transition: 0.3s;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .main {
+        margin-left: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <span class="hamburger" onclick="toggleSidebar()">☰</span>
+    <strong>Digischool</strong>
+</header>
+
+<div class="page">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+    <a href="user-dashboard.html">Dashboard</a>
+
+    <div class="dropdown">
+        <button class="dropdown-btn">Registry ▾</button>
+        <div class="dropdown-content">
+            <a href="register-students.html">Students</a>
+            <a href="register-teachers.html">Teachers</a>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-btn">Attendance ▾</button>
+        <div class="dropdown-content">
+            <a href="attendance-students.html">Students</a>
+            <a href="attendance-teachers.html">Teachers</a>
+        </div>
+    </div>
+
+    <a href="#">Settings</a>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+<div class="container">
+
+<h2>Register Teacher</h2>
+
+<form id="teacherForm" class="teacher-form">
+
+    <div class="form-group">
+        <label>Title</label>
+        <select id="title" required>
+            <option value="">Select Title</option>
+            <option>Mr</option>
+            <option>Mrs</option>
+            <option>Miss</option>
+            <option>Dr</option>
+            <option>Prof</option>
+            <option>Sir</option>
+            <option>Madam</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Surname</label>
+        <input type="text" id="surname" required>
+    </div>
+
+    <div class="form-group">
+        <label>First Name</label>
+        <input type="text" id="firstname" required>
+    </div>
+
+    <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" id="lastname" required>
+    </div>
+
+    <div class="form-group">
+        <label>Gender</label>
+        <select id="gender" required>
+            <option value="">Select Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="phone" placeholder="07XXXXXXXX" required>
+    </div>
+
+    <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="email" required>
+    </div>
+
+    <div class="form-group">
+        <label>Employer</label>
+        <select id="employer" required>
+            <option value="">Select Employer</option>
+            <option>TSC</option>
+            <option>BOM</option>
+        </select>
+    </div>
+
+    <button type="submit">Register Teacher</button>
+    <div id="formMessage" class="form-message"></div>
+
+</form>
+
+</div>
+</div>
+</div>
+
+<script>
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+}
+
+/* Dropdowns */
+document.querySelectorAll(".dropdown-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const content = btn.nextElementSibling;
+        content.style.display =
+            content.style.display === "block" ? "none" : "block";
+    });
+});
+
+/* Teacher Registration */
+const teacherForm = document.getElementById("teacherForm");
+const formMessage = document.getElementById("formMessage");
+
+teacherForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const teacher = {
+        title: title.value,
+        surname: surname.value.trim(),
+        firstname: firstname.value.trim(),
+        lastname: lastname.value.trim(),
+        gender: gender.value,
+        phone: phone.value.trim(),
+        email: email.value.trim(),
+        employer: employer.value
+    };
+
+    if (Object.values(teacher).includes("")) {
+        formMessage.textContent = "❌ Please fill all fields.";
+        formMessage.className = "form-message error";
+        return;
+    }
+
+    let teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+    teachers.push(teacher);
+    localStorage.setItem("teachers", JSON.stringify(teachers));
+
+    teacherForm.reset();
+    formMessage.textContent = "✅ Teacher registered successfully!";
+    formMessage.className = "form-message success";
+});
+</script>
+
+</body>
+</html>
