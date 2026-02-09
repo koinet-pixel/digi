@@ -191,7 +191,7 @@ button:hover {
 
 <!-- SIDEBAR -->
 <nav class="sidebar" id="sidebar">
-    <a href="user-dashboard.html">Dashboard</a>
+    <a href="index.html">Dashboard</a>
 
     <div class="dropdown">
         <button class="dropdown-btn">Registry ▾</button>
@@ -271,6 +271,20 @@ document.querySelectorAll(".dropdown-btn").forEach(btn => {
     });
 });
 
+/* Load attendance from LocalStorage */
+function loadAttendance() {
+    const data = JSON.parse(localStorage.getItem("attendance")) || {};
+    document.querySelectorAll("tr").forEach(row => {
+        const name = row.cells[0]?.textContent;
+        const p = row.querySelector(".present");
+        const a = row.querySelector(".absent");
+        if (name && p && a && data[name]) {
+            p.checked = data[name] === "present";
+            a.checked = data[name] === "absent";
+        }
+    });
+}
+
 /* Attendance logic */
 const form = document.getElementById("attendanceForm");
 const message = document.getElementById("message");
@@ -287,10 +301,17 @@ document.querySelectorAll("tr").forEach(row => {
 form.onsubmit = e => {
     e.preventDefault();
     let ok = true;
+    const attendanceData = {};
+
     document.querySelectorAll("tr").forEach(row => {
+        const name = row.cells[0]?.textContent;
         const p = row.querySelector(".present");
         const a = row.querySelector(".absent");
-        if (p && a && !p.checked && !a.checked) ok = false;
+        if (name && p && a) {
+            if (!p.checked && !a.checked) ok = false;
+            if (p.checked) attendanceData[name] = "present";
+            if (a.checked) attendanceData[name] = "absent";
+        }
     });
 
     if (!ok) {
@@ -299,9 +320,15 @@ form.onsubmit = e => {
         return;
     }
 
+    // Save to localStorage
+    localStorage.setItem("attendance", JSON.stringify(attendanceData));
+
     message.textContent = "✅ Attendance saved successfully!";
     message.className = "message success";
 };
+
+/* Load saved attendance on page load */
+window.onload = loadAttendance;
 </script>
 
 </body>
