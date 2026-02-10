@@ -88,6 +88,10 @@ function editSchool(index) {
 }
 
 renderTable();
+if (localStorage.getItem("adminLoggedIn") !== "true") {
+    alert("Access denied! Admins only.");
+    window.location.href = "login.html";
+}
 </script>
 
 </body>
