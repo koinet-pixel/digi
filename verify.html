@@ -21,17 +21,22 @@ button:hover{background:#b71c1c;}
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="recaptcha-container">
 <h2>Verify OTP</h2>
 <p>Enter the 6-digit OTP sent to your phone</p>
 <input type="text" id="otp" placeholder="Enter OTP">
 <button onclick="verifyOTP()">Verify</button>
 <div class="resend" onclick="resendOTP()">Resend OTP</div>
 </div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getAuth, PhoneAuthProvider, signInWithCredential } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import { 
+    getAuth, 
+    RecaptchaVerifier, 
+    signInWithPhoneNumber,
+    PhoneAuthProvider, 
+    signInWithCredential 
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -40,27 +45,75 @@ const firebaseConfig = {
   projectId: "digischool-90ea0",
   storageBucket: "digischool-90ea0.firebasestorage.app",
   messagingSenderId: "63814149016",
-  appId: "1:63814149016:web:d1c508af4c210d2a36c1ed"
+  appId: "1:63814149016:web:d1c508af4c210d2a36c1ed",
+  measurementId: "G-YRHM99F3L4"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// Get phone number from login page
+const phone = sessionStorage.getItem("phone");
+
+if (!phone) {
+    alert("No phone number found. Please login again.");
+    window.location.href = "login.html";
+}
+
+// Create invisible reCAPTCHA
+window.recaptchaVerifier = new RecaptchaVerifier(
+    auth,
+    'recaptcha-container',
+    { size: 'invisible' }
+);
+
+// Send OTP automatically when page loads
+window.addEventListener("load", async () => {
+    try {
+        const appVerifier = window.recaptchaVerifier;
+        const confirmationResult = await signInWithPhoneNumber(auth, phone, appVerifier);
+
+        // Save verificationId
+        sessionStorage.setItem("verificationId", confirmationResult.verificationId);
+
+        alert("OTP sent successfully!");
+    } catch (error) {
+        alert("Failed to send OTP: " + error.message);
+    }
+});
+
+// Verify OTP
 window.verifyOTP = async function(){
-    const code = document.getElementById("otp").value;
+    const code = document.getElementById("otp").value.trim();
     const verificationId = sessionStorage.getItem("verificationId");
-    const credential = PhoneAuthProvider.credential(verificationId, code);
+
+    if (!verificationId) {
+        alert("Verification session expired. Please login again.");
+        return;
+    }
+
     try{
+        const credential = PhoneAuthProvider.credential(verificationId, code);
         await signInWithCredential(auth, credential);
+
         alert("OTP Verified! Redirecting to dashboard...");
         window.location.href = "user-dashboard.html";
+
     } catch(err){
-        alert("Wrong OTP: "+err.message);
+        alert("Wrong OTP: " + err.message);
     }
 }
 
-window.resendOTP = function(){
-    alert("To resend OTP, go back and submit the phone number again.");
+// Resend OTP
+window.resendOTP = async function(){
+    try {
+        const appVerifier = window.recaptchaVerifier;
+        const confirmationResult = await signInWithPhoneNumber(auth, phone, appVerifier);
+        sessionStorage.setItem("verificationId", confirmationResult.verificationId);
+        alert("New OTP sent!");
+    } catch (error) {
+        alert("Error resending OTP: " + error.message);
+    }
 }
 </script>
 
