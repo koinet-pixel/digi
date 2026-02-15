@@ -161,31 +161,23 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
 
     try {
         // Create Firebase Authentication user with email & password
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+// 1️⃣ Create user
+const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-        // Save extra school data in Firestore
-        const schoolData = {
-            name: form[0].value.trim(),
-            email,
-            phone: form[2].value.trim(),
-            type: form[3].value,
-            level: form[4].value,
-            county: form[5].value,
-            product: form[6].value,
-            population: form[7].value,
-            uid: userCredential.user.uid
-        };
+// 2️⃣ Save Firestore data FIRST
+await setDoc(doc(db, "schools", userCredential.user.uid), schoolData);
+
+// 3️⃣ Send verification email
 await sendEmailVerification(userCredential.user);
 
+// 4️⃣ Redirect ONCE
 alert("Registration successful! Please verify your email.");
 window.location.href = "verify.html";
 
 
+
 await setDoc(doc(db, "schools", userCredential.user.uid), schoolData);
 
-
-        alert("Registration successful! Redirecting to login page...");
-        window.location.href = "login.html";
 
     } catch (error) {
         alert("Error: " + error.message);
