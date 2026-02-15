@@ -24,17 +24,14 @@ button:hover { background:#0277bd;}
 
 <div class="container">
 <h3>Login</h3>
-<div class="subtitle">Enter your email or phone number</div>
+<div class="subtitle">Enter your phone number and password</div>
 
 <form id="loginForm">
-    <label>Email</label>
-    <input type="email" id="email" placeholder="email@example.com">
-
-    <label>Phone Number (for OTP)</label>
-    <input type="tel" id="phone" placeholder="+254712345678" pattern="[0-9+]*">
+    <label>Phone Number</label>
+    <input type="tel" id="phone" placeholder="+254712345678" pattern="[0-9+]*" required>
 
     <label>Password</label>
-    <input type="password" id="password" placeholder="Enter your password">
+    <input type="password" id="password" placeholder="Enter your password" required>
 
     <div id="recaptcha-container"></div>
 
@@ -48,7 +45,8 @@ button:hover { background:#0277bd;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -62,35 +60,41 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-// Initialize invisible reCAPTCHA
+// Invisible reCAPTCHA
 window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {size:'invisible'}, auth);
 
 document.getElementById("loginForm").addEventListener("submit", async (e)=>{
     e.preventDefault();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
     const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if(!phone || !password){
+        alert("Please fill in both fields!");
+        return;
+    }
 
     try{
-        // ===== Email/Password Login =====
-        if(email && password){
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            alert("Login successful! Redirecting to dashboard...");
-            window.location.href = "user-dashboard.html";
+        // ===== Step 1: Find user in Firestore by phone =====
+        const q = query(collection(db, "schools"), where("phone", "==", phone));
+        const querySnapshot = await getDocs(q);
+
+        if(querySnapshot.empty){
+            alert("Phone number not registered!");
             return;
         }
 
-        // ===== Phone OTP Login =====
-        if(phone){
-            const confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
-            sessionStorage.setItem("verificationId", confirmationResult.verificationId);
-            sessionStorage.setItem("phone", phone);
-            window.location.href = "verify.html";
-            return;
-        }
+        // Get user's email from Firestore
+        const userData = querySnapshot.docs[0].data();
+        const email = userData.email;
 
-        alert("Please enter either email/password or phone number.");
+        // ===== Step 2: Sign in with email & password =====
+        await signInWithEmailAndPassword(auth, email, password);
+
+        // ===== Step 3: Redirect to OTP page =====
+        sessionStorage.setItem("phone", phone);
+        window.location.href = "verify.html";
 
     } catch(err){
         alert("Error: "+err.message);
