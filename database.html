@@ -158,12 +158,46 @@ button {
     </div>
 </div>
 
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import {
+    getFirestore, 
+    collection, 
+    addDoc, 
+    getDocs,
+    onSnapshot
+} 
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
+    authDomain: "digischool-90ea0.firebaseapp.com",
+    projectId: "digischool-90ea0",
+    storageBucket: "digischool-90ea0.firebasestorage.app",
+    messagingSenderId: "63814149016",
+    appId: "1:63814149016:web:d1c508af4c210d2a36c1ed",
+    measurementId: "G-YRHM99F3L4"
+  };
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.db = db;
+window.collection = collection;
+window.addDoc = addDoc;
+window.getDocs = getDocs;
+window.onSnapshot = onSnapshot;x
+</script>
+
+
 <script>
     let schools = [];
 
-getDocs(collection(db, "schools")).then(snapshot => {
+onSnapshot(collection(db, "schools"), snapshot => {
     schools = [];
-    snapshot.forEach(doc => schools.push(doc.data()));
+    snapshot.forEach(doc => {
+        schools.push(doc.data());
+    });
     renderTable();
 });
 
@@ -225,29 +259,6 @@ if (localStorage.getItem("adminLoggedIn") !== "true") {
     alert("Access denied! Admins only.");
     window.location.href = "login.html";
 }
-</script>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } 
-from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
-  const firebaseConfig = {
-    apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
-    authDomain: "digischool-90ea0.firebaseapp.com",
-    projectId: "digischool-90ea0",
-    storageBucket: "digischool-90ea0.firebasestorage.app",
-    messagingSenderId: "63814149016",
-    appId: "1:63814149016:web:d1c508af4c210d2a36c1ed",
-    measurementId: "G-YRHM99F3L4"
-  };
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.db = db;
-window.addDoc = addDoc;
-window.collection = collection;
-window.getDocs = getDocs;
 </script>
 
 </body>
