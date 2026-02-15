@@ -67,29 +67,36 @@ window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {size:'i
 
 document.getElementById("loginForm").addEventListener("submit", async (e)=>{
     e.preventDefault();
+
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const phone = document.getElementById("phone").value.trim();
 
     try{
+        // ===== Email/Password Login =====
         if(email && password){
-            // Email + Password login
-            await signInWithEmailAndPassword(auth,email,password);
-            alert("Login successful! Redirecting to OTP verification...");
+            await signInWithEmailAndPassword(auth, email, password);
+            alert("Email login successful! Redirecting...");
+            window.location.href = "dashboard.html"; // or wherever
+            return; // stop further execution
         }
 
+        // ===== Phone Login =====
         if(phone){
-            // Phone OTP login
             const confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
             sessionStorage.setItem("verificationId", confirmationResult.verificationId);
             sessionStorage.setItem("phone", phone);
-            window.location.href="verify.html"; // OTP page
+            window.location.href="verify.html"; // redirect to OTP page
+            return;
         }
 
+        alert("Please enter either email/password or phone number.");
+        
     } catch(err){
         alert("Error: "+err.message);
     }
 });
+
 </script>
 </body>
 </html>
