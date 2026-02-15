@@ -125,7 +125,9 @@ button:hover { background: #0277bd; }
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, sendSignInLinkToEmail, signInWithPhoneNumber, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } 
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 import { setDoc, doc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
@@ -173,6 +175,10 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
             population: form[7].value,
             uid: userCredential.user.uid
         };
+await sendEmailVerification(userCredential.user);
+
+alert("Registration successful! Please verify your email.");
+window.location.href = "verify.html";
 
 
 await setDoc(doc(db, "schools", userCredential.user.uid), schoolData);

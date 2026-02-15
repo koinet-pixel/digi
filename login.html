@@ -89,11 +89,11 @@ document.getElementById("loginForm").addEventListener("submit", async (e)=>{
         const schoolData = docSnap.data();
         const phone = schoolData.phone;
 
-        // Save phone in session for OTP page
-        sessionStorage.setItem("phone", phone);
-
-        // Step 3: Redirect to OTP verification page
-        window.location.href = "verify.html";
+        if (!user.emailVerified) {
+    window.location.href = "verify.html";
+} else {
+    window.location.href = "user-dashboard.html";
+}
 
     } catch (error) {
         alert("Login failed: " + error.message);
