@@ -258,13 +258,10 @@ button:hover {
     };
 
     // Save to ONLINE DATABASE
-db.collection("schools").add(school)
-.then(() => {
-    alert("School saved online!");
-})
-.catch((error) => {
-    alert("Error saving school");
-});
+addDoc(collection(db, "schools"), school)
+.then(() => alert("School saved online!"))
+.catch(err => alert(err.message));
+
 
     // Show custom popup
     const popup = document.getElementById("successPopup");
@@ -283,14 +280,9 @@ db.collection("schools").add(school)
 </script>
 
 <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } 
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
   const firebaseConfig = {
     apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
     authDomain: "digischool-90ea0.firebaseapp.com",
@@ -301,9 +293,14 @@ db.collection("schools").add(school)
     measurementId: "G-YRHM99F3L4"
   };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.db = db;
+window.addDoc = addDoc;
+window.collection = collection;
+window.getDocs = getDocs;
 </script>
+
 </body>
 </html>

@@ -161,10 +161,9 @@ button {
 <script>
     let schools = [];
 
-db.collection("schools").get().then((snapshot) => {
-    snapshot.forEach(doc => {
-        schools.push(doc.data());
-    });
+getDocs(collection(db, "schools")).then(snapshot => {
+    schools = [];
+    snapshot.forEach(doc => schools.push(doc.data()));
     renderTable();
 });
 
@@ -227,15 +226,11 @@ if (localStorage.getItem("adminLoggedIn") !== "true") {
     window.location.href = "login.html";
 }
 </script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } 
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
   const firebaseConfig = {
     apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
     authDomain: "digischool-90ea0.firebaseapp.com",
@@ -246,9 +241,14 @@ if (localStorage.getItem("adminLoggedIn") !== "true") {
     measurementId: "G-YRHM99F3L4"
   };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.db = db;
+window.addDoc = addDoc;
+window.collection = collection;
+window.getDocs = getDocs;
 </script>
+
 </body>
 </html>
