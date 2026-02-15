@@ -27,13 +27,11 @@ button:hover { background:#0277bd;}
 <div class="subtitle">Enter your phone number and password</div>
 
 <form id="loginForm">
-    <label>Phone Number</label>
-    <input type="tel" id="phone" placeholder="+254712345678" pattern="[0-9+]*" required>
+    <label>Email Address</label>
+    <input type="email" id="email" placeholder="email@example.com" required>
 
     <label>Password</label>
     <input type="password" id="password" placeholder="Enter your password" required>
-
-    <div id="recaptcha-container"></div>
 
     <button type="submit">Login</button>
 </form>
@@ -45,8 +43,8 @@ button:hover { background:#0277bd;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -55,51 +53,53 @@ const firebaseConfig = {
   projectId: "digischool-90ea0",
   storageBucket: "digischool-90ea0.firebasestorage.app",
   messagingSenderId: "63814149016",
-  appId: "1:63814149016:web:d1c508af4c210d2a36c1ed"
+  appId: "1:63814149016:web:d1c508af4c210d2a36c1ed",
+  measurementId: "G-YRHM99F3L4"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Invisible reCAPTCHA
-window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {size:'invisible'}, auth);
-
 document.getElementById("loginForm").addEventListener("submit", async (e)=>{
     e.preventDefault();
-    const phone = document.getElementById("phone").value.trim();
+
+    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
 
-    if(!phone || !password){
+    if(!email || !password){
         alert("Please fill in both fields!");
         return;
     }
 
-    try{
-        // ===== Step 1: Find user in Firestore by phone =====
-        const q = query(collection(db, "schools"), where("phone", "==", phone));
-        const querySnapshot = await getDocs(q);
+    try {
+        // Step 1: Sign in using email & password
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-        if(querySnapshot.empty){
-            alert("Phone number not registered!");
+        // Step 2: Get school data from Firestore using UID
+        const docRef = doc(db, "schools", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            alert("User data not found!");
             return;
         }
 
-        // Get user's email from Firestore
-        const userData = querySnapshot.docs[0].data();
-        const email = userData.email;
+        const schoolData = docSnap.data();
+        const phone = schoolData.phone;
 
-        // ===== Step 2: Sign in with email & password =====
-        await signInWithEmailAndPassword(auth, email, password);
-
-        // ===== Step 3: Redirect to OTP page =====
+        // Save phone in session for OTP page
         sessionStorage.setItem("phone", phone);
+
+        // Step 3: Redirect to OTP verification page
         window.location.href = "verify.html";
 
-    } catch(err){
-        alert("Error: "+err.message);
+    } catch (error) {
+        alert("Login failed: " + error.message);
     }
 });
 </script>
+
 </body>
 </html>
