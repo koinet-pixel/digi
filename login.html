@@ -172,6 +172,10 @@ button:hover {
     <div class="subtitle">Enter your email and password below to log in</div>
 
     <form id="loginForm">
+        <label>Phone Number</label>
+<input type="tel" id="phone" placeholder="+254712345678">
+<div id="recaptcha-container"></div>
+
         <label>Email Address</label>
         <input type="email" placeholder="email@example.com" required>
 
@@ -194,6 +198,11 @@ button:hover {
 
         <button type="submit">Login</button>
     </form>
+    <label>Enter OTP</label>
+<input id="otp">
+<button onclick="verifyOTP()">Verify</button>
+
+<button type="button" onclick="sendOTP()">Send OTP</button>
 
     <div class="login">
         Don't have an account? <a href="./index.html">Signup</a>
@@ -246,6 +255,39 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
         alert("Invalid credentials!");
     }
 });
+
+window.recaptchaVerifier = new RecaptchaVerifier(
+  'recaptcha-container',
+  { size: 'invisible' },
+  auth
+);
+
+function sendOTP(){
+  const phone = document.getElementById("phone").value;
+
+  signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+    .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        alert("OTP sent!");
+    })
+    .catch((error) => {
+        alert("Error sending OTP");
+        console.log(error);
+    });
+}
+
+function verifyOTP(){
+  const code = document.getElementById("otp").value;
+
+  confirmationResult.confirm(code)
+    .then((result) => {
+        alert("Login successful!");
+        localStorage.setItem("adminLoggedIn","true");
+        window.location.href="database.html";
+    })
+    .catch(() => alert("Wrong OTP"));
+}
+
 </script>
 
 <script type="module">
@@ -266,6 +308,15 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
     appId: "1:63814149016:web:d1c508af4c210d2a36c1ed",
     measurementId: "G-YRHM99F3L4"
   };
+
+  import {
+  getAuth,
+  signInWithPhoneNumber,
+  RecaptchaVerifier
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+const auth = getAuth(app);
+
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
