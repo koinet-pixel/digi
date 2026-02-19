@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <title>Digischool | Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
+/* DESIGN UNCHANGED */
 * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
 body { margin:0; background: linear-gradient(to right,#fdebed,transparent); display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px;}
 .container { background: #fff; padding:25px; border-radius:10px; max-width:400px; width:100%; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
@@ -20,86 +22,63 @@ button:hover { background:#0277bd;}
 .login a:hover{ text-decoration:underline;}
 </style>
 </head>
+
 <body>
 
 <div class="container">
 <h3>Login</h3>
-<div class="subtitle">Enter your phone number and password</div>
+<div class="subtitle">Enter your email and password</div>
 
 <form id="loginForm">
-    <label>Email Address</label>
-    <input type="email" id="email" placeholder="email@example.com" required>
+<label>Email Address</label>
+<input type="email" id="email" required>
 
-    <label>Password</label>
-    <input type="password" id="password" placeholder="Enter your password" required>
+<label>Password</label>
+<input type="password" id="password" required>
 
-    <button type="submit">Login</button>
+<button type="submit">Login</button>
 </form>
 
 <div class="login">
-    Don't have an account? <a href="./index.html">Signup</a>
+Don't have an account? <a href="./index.html">Signup</a>
 </div>
 </div>
 
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-// Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
-  authDomain: "digischool-90ea0.firebaseapp.com",
-  projectId: "digischool-90ea0",
-  storageBucket: "digischool-90ea0.firebasestorage.app",
-  messagingSenderId: "63814149016",
-  appId: "1:63814149016:web:d1c508af4c210d2a36c1ed",
-  measurementId: "G-YRHM99F3L4"
+apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
+authDomain: "digischool-90ea0.firebaseapp.com",
+projectId: "digischool-90ea0",
+storageBucket: "digischool-90ea0.firebasestorage.app",
+messagingSenderId: "63814149016",
+appId: "1:63814149016:web:d1c508af4c210d2a36c1ed"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
 document.getElementById("loginForm").addEventListener("submit", async (e)=>{
-    e.preventDefault();
+e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value.trim();
 
-    if(!email || !password){
-        alert("Please fill in both fields!");
-        return;
-    }
+try {
 
-    try {
-        // Step 1: Sign in using email & password
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+await signInWithEmailAndPassword(auth, email, password);
 
-        // Step 2: Get school data from Firestore using UID
-        const docRef = doc(db, "schools", user.uid);
-        const docSnap = await getDoc(docRef);
+window.location.href = "user-dashboard.html";
 
-        if (!docSnap.exists()) {
-            alert("User data not found!");
-            return;
-        }
-
-        const schoolData = docSnap.data();
-        const phone = schoolData.phone;
-
-        if (!user.emailVerified) {
-    window.location.href = "verify.html";
-} else {
-    window.location.href = "user-dashboard.html";
+} catch (error) {
+alert("Login failed: " + error.message);
 }
 
-    } catch (error) {
-        alert("Login failed: " + error.message);
-    }
 });
-</script>
 
+</script>
 </body>
 </html>
