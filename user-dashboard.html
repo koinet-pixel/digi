@@ -151,14 +151,18 @@ h2 {
 
 <header>
     <span class="hamburger" onclick="toggleSidebar()">☰</span>
-    <strong>Digischool Dashboard</strong>
+    <strong id="dashboardTitle">Digischool Dashboard</strong>
+
 </header>
 
 <div class="page">
 
 <!-- SIDEBAR -->
 <nav class="sidebar" id="sidebar">
-    <a href="user-dashboard.html">Dashboard</a>
+    <strong id="dashboardTitle">Digischool Dashboard</strong>
+
+<img id="schoolLogo">
+<div id="schoolNameSide"></div>
 
     <div class="dropdown">
         <button class="dropdown-btn">Registry ▾</button>
@@ -210,76 +214,70 @@ h2 {
 
 </div>
 </div>
+<script type="module">
 
-<script>
-function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("active");
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import { getAuth, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+import { getFirestore, doc, getDoc } 
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
+authDomain: "digischool-90ea0.firebaseapp.com",
+projectId: "digischool-90ea0",
+storageBucket: "digischool-90ea0.firebasestorage.app",
+messagingSenderId: "63814149016",
+appId: "1:63814149016:web:d1c508af4c210d2a36c1ed"
+};
+
+
+// Initialize
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+// ✅ Check logged-in user
+onAuthStateChanged(auth, async (user) => {
+
+if (!user) {
+    window.location.href = "login.html";
+    return;
 }
 
-/* Dropdowns */
-document.querySelectorAll(".dropdown-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const content = btn.nextElementSibling;
-        content.style.display =
-            content.style.display === "block" ? "none" : "block";
-    });
+try {
+
+const docRef = doc(db, "schools", user.uid);
+const snap = await getDoc(docRef);
+
+if (snap.exists()) {
+
+const data = snap.data();
+
+// Change title
+document.getElementById("dashboardTitle")
+.textContent = data.schoolName + " Dashboard";
+
+// Sidebar name
+if(document.getElementById("schoolNameSide"))
+document.getElementById("schoolNameSide").textContent = data.schoolName;
+
+// Logo
+if(data.logoURL && document.getElementById("schoolLogo"))
+document.getElementById("schoolLogo").src = data.logoURL;
+
+}
+
+} catch (error) {
+console.log("Firestore error:", error);
+}
+
 });
-
-/* ===== DASHBOARD DATA ===== */
-
-// Registered
-const teachers = JSON.parse(localStorage.getItem("teachers")) || [];
-const students = JSON.parse(localStorage.getItem("students")) || [];
-
-document.getElementById("teachersCount").textContent = teachers.length;
-document.getElementById("studentsCount").textContent = students.length;
-
-// Attendance (saved daily)
-const today = new Date().toISOString().split("T")[0];
-
-const teacherAttendance =
-    JSON.parse(localStorage.getItem("teacherAttendance_" + today)) || [];
-
-const studentAttendance =
-    JSON.parse(localStorage.getItem("studentAttendance_" + today)) || [];
-
-document.getElementById("teachersPresent").textContent =
-    teacherAttendance.length;
-
-document.getElementById("studentsPresent").textContent =
-    studentAttendance.length;
 </script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
-    authDomain: "digischool-90ea0.firebaseapp.com",
-    projectId: "digischool-90ea0",
-    storageBucket: "digischool-90ea0.firebasestorage.app",
-    messagingSenderId: "63814149016",
-    appId: "1:63814149016:web:d1c508af4c210d2a36c1ed",
-    measurementId: "G-YRHM99F3L4"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = "login.html";
-    } else if (!user.emailVerified) {
-        window.location.href = "verify.html";
-    }
-});
-
-</script>
 </body>
 </html>

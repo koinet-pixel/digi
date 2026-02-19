@@ -65,13 +65,9 @@ button:hover { background: #0277bd; }
 
 <div class="field">
 <label>County</label>
-<select id="county" required>
-<option value="" disabled selected hidden>Choose county</option>
-<option>Nairobi</option>
-<option>Mombasa</option>
-<option>Kisumu</option>
-<option>Nakuru</option>
-<option>Kiambu</option>
+<select id="county"></select>
+
+
 <!-- (You can paste back full county list if needed) -->
 </select>
 </div>
@@ -180,6 +176,29 @@ alert("Error: " + error.message);
 }
 
 });
+const counties = [
+    "Select County", 
+"Baringo","Bomet","Bungoma","Busia","Elgeyo-Marakwet",
+"Embu","Garissa","Homa Bay","Isiolo","Kajiado",
+"Kakamega","Kericho","Kiambu","Kilifi","Kirinyaga",
+"Kisii","Kisumu","Kitui","Kwale","Laikipia",
+"Lamu","Machakos","Makueni","Mandera","Marsabit",
+"Meru","Migori","Mombasa","Murang'a","Nairobi",
+"Nakuru","Nandi","Narok","Nyamira","Nyandarua",
+"Nyeri","Samburu","Siaya","Taita-Taveta","Tana River",
+"Tharaka-Nithi","Trans Nzoia","Turkana","Uasin Gishu",
+"Vihiga","Wajir","West Pokot"
+];
+
+const select = document.getElementById("county");
+
+counties.forEach(county => {
+    let option = document.createElement("option");
+    option.value = county;
+    option.textContent = county;
+    select.appendChild(option);
+});
+
 
 </script>
 </body>
