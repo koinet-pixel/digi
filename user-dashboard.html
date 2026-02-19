@@ -222,11 +222,15 @@ from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } 
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-import { getFirestore, doc, getDoc } 
+import { 
+    getFirestore, doc, getDoc,
+    collection, query, where, getDocs
+} 
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
+
 const firebaseConfig = {
-apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
+apiKey: "YOUR_KEY",
 authDomain: "digischool-90ea0.firebaseapp.com",
 projectId: "digischool-90ea0",
 storageBucket: "digischool-90ea0.firebasestorage.app",
@@ -234,14 +238,11 @@ messagingSenderId: "63814149016",
 appId: "1:63814149016:web:d1c508af4c210d2a36c1ed"
 };
 
-
-// Initialize
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 
-// ✅ Check logged-in user
 onAuthStateChanged(auth, async (user) => {
 
 if (!user) {
@@ -251,32 +252,64 @@ if (!user) {
 
 try {
 
-const docRef = doc(db, "schools", user.uid);
-const snap = await getDoc(docRef);
+const schoolId = user.uid;
 
-if (snap.exists()) {
+// 🔹 Load school info
+const schoolDoc = await getDoc(doc(db, "schools", schoolId));
 
-const data = snap.data();
+if (schoolDoc.exists()) {
 
-// Change title
+const data = schoolDoc.data();
+
 document.getElementById("dashboardTitle")
 .textContent = data.schoolName + " Dashboard";
 
-// Sidebar name
-if(document.getElementById("schoolNameSide"))
-document.getElementById("schoolNameSide").textContent = data.schoolName;
+document.getElementById("schoolNameSide")
+.textContent = data.schoolName;
 
-// Logo
-if(data.logoURL && document.getElementById("schoolLogo"))
+if (data.logoURL)
 document.getElementById("schoolLogo").src = data.logoURL;
 
 }
 
-} catch (error) {
-console.log("Firestore error:", error);
+
+// 🔹 Count Teachers
+const teachersQ = query(
+collection(db, "teachers"),
+where("schoolId", "==", schoolId)
+);
+
+const teachersSnap = await getDocs(teachersQ);
+document.getElementById("teachersCount")
+.textContent = teachersSnap.size;
+
+
+// 🔹 Count Students
+const studentsQ = query(
+collection(db, "students"),
+where("schoolId", "==", schoolId)
+);
+
+const studentsSnap = await getDocs(studentsQ);
+document.getElementById("studentsCount")
+.textContent = studentsSnap.size;
+
+}
+catch(e){
+console.log("Dashboard error:", e);
 }
 
 });
+
+import { addDoc, collection } from "firebase/firestore";
+
+await addDoc(collection(db, "teachers"), {
+schoolId: auth.currentUser.uid,
+name: teacherName,
+phone: teacherPhone,
+createdAt: new Date()
+});
+
 </script>
 
 </body>
