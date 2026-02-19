@@ -65,10 +65,57 @@ button:hover { background: #0277bd; }
 
 <div class="field">
 <label>County</label>
-<select id="county"></select>
+<select id="county" required>
+<option value="" disabled selected hidden>Choose county</option>
 
+<option>Baringo</option>
+<option>Bomet</option>
+<option>Bungoma</option>
+<option>Busia</option>
+<option>Elgeyo-Marakwet</option>
+<option>Embu</option>
+<option>Garissa</option>
+<option>Homa Bay</option>
+<option>Isiolo</option>
+<option>Kajiado</option>
+<option>Kakamega</option>
+<option>Kericho</option>
+<option>Kiambu</option>
+<option>Kilifi</option>
+<option>Kirinyaga</option>
+<option>Kisii</option>
+<option>Kisumu</option>
+<option>Kitui</option>
+<option>Kwale</option>
+<option>Laikipia</option>
+<option>Lamu</option>
+<option>Machakos</option>
+<option>Makueni</option>
+<option>Mandera</option>
+<option>Marsabit</option>
+<option>Meru</option>
+<option>Migori</option>
+<option>Mombasa</option>
+<option>Murang'a</option>
+<option>Nairobi</option>
+<option>Nakuru</option>
+<option>Nandi</option>
+<option>Narok</option>
+<option>Nyamira</option>
+<option>Nyandarua</option>
+<option>Nyeri</option>
+<option>Samburu</option>
+<option>Siaya</option>
+<option>Taita-Taveta</option>
+<option>Tana River</option>
+<option>Tharaka-Nithi</option>
+<option>Trans Nzoia</option>
+<option>Turkana</option>
+<option>Uasin Gishu</option>
+<option>Vihiga</option>
+<option>Wajir</option>
+<option>West Pokot</option>
 
-<!-- (You can paste back full county list if needed) -->
 </select>
 </div>
 
@@ -130,6 +177,8 @@ appId: "1:63814149016:web:d1c508af4c210d2a36c1ed"
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const county = document.getElementById("county").value;
+
 
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
 e.preventDefault();
@@ -176,28 +225,7 @@ alert("Error: " + error.message);
 }
 
 });
-const counties = [
-    "Select County", 
-"Baringo","Bomet","Bungoma","Busia","Elgeyo-Marakwet",
-"Embu","Garissa","Homa Bay","Isiolo","Kajiado",
-"Kakamega","Kericho","Kiambu","Kilifi","Kirinyaga",
-"Kisii","Kisumu","Kitui","Kwale","Laikipia",
-"Lamu","Machakos","Makueni","Mandera","Marsabit",
-"Meru","Migori","Mombasa","Murang'a","Nairobi",
-"Nakuru","Nandi","Narok","Nyamira","Nyandarua",
-"Nyeri","Samburu","Siaya","Taita-Taveta","Tana River",
-"Tharaka-Nithi","Trans Nzoia","Turkana","Uasin Gishu",
-"Vihiga","Wajir","West Pokot"
-];
 
-const select = document.getElementById("county");
-
-counties.forEach(county => {
-    let option = document.createElement("option");
-    option.value = county;
-    option.textContent = county;
-    select.appendChild(option);
-});
 
 
 </script>
