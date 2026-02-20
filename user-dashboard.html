@@ -159,13 +159,13 @@ h2 {
 
 <!-- SIDEBAR -->
 <nav class="sidebar" id="sidebar">
-    <a href="index.html">Dashboard</a>
+    <a href="user-dashboard.html">Dashboard</a>
 
     <div class="dropdown">
         <button class="dropdown-btn">Registry ▾</button>
         <div class="dropdown-content">
-            <a href="students.html">Students</a>
-            <a href="teachers.html">Teachers</a>
+            <a href="register-students.html">Students</a>
+            <a href="register-teachers.html">Teachers</a>
         </div>
     </div>
 
@@ -226,21 +226,38 @@ import {
 } 
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-
 const firebaseConfig = {
-apiKey: "YOUR_KEY",
-authDomain: "digischool-90ea0.firebaseapp.com",
-projectId: "digischool-90ea0",
-storageBucket: "digischool-90ea0.firebasestorage.app",
-messagingSenderId: "63814149016",
-appId: "1:63814149016:web:d1c508af4c210d2a36c1ed"
-};
+    apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
+    authDomain: "digischool-90ea0.firebaseapp.com",
+    projectId: "digischool-90ea0",
+    storageBucket: "digischool-90ea0.firebasestorage.app",
+    messagingSenderId: "63814149016",
+    appId: "1:63814149016:web:d1c508af4c210d2a36c1ed",
+    measurementId: "G-YRHM99F3L4"
+  };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 
+/* ================= SIDEBAR ================= */
+window.toggleSidebar = function () {
+    document.getElementById("sidebar").classList.toggle("active");
+};
+
+
+/* ================= DROPDOWN ================= */
+document.querySelectorAll(".dropdown-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const content = btn.nextElementSibling;
+        content.style.display =
+            content.style.display === "block" ? "none" : "block";
+    });
+});
+
+
+/* ================= AUTH ================= */
 onAuthStateChanged(auth, async (user) => {
 
 if (!user) {
@@ -252,7 +269,7 @@ try {
 
 const schoolId = user.uid;
 
-// 🔹 Load school info
+// Load school info
 const schoolDoc = await getDoc(doc(db, "schools", schoolId));
 
 if (schoolDoc.exists()) {
@@ -261,17 +278,10 @@ const data = schoolDoc.data();
 
 document.getElementById("dashboardTitle")
 .textContent = data.schoolName + " Dashboard";
-
-document.getElementById("schoolNameSide")
-.textContent = data.schoolName;
-
-if (data.logoURL)
-document.getElementById("schoolLogo").src = data.logoURL;
-
 }
 
 
-// 🔹 Count Teachers
+// Count Teachers
 const teachersQ = query(
 collection(db, "teachers"),
 where("schoolId", "==", schoolId)
@@ -282,7 +292,7 @@ document.getElementById("teachersCount")
 .textContent = teachersSnap.size;
 
 
-// 🔹 Count Students
+// Count Students
 const studentsQ = query(
 collection(db, "students"),
 where("schoolId", "==", schoolId)
@@ -299,16 +309,6 @@ console.log("Dashboard error:", e);
 
 });
 
-import { addDoc, collection } from "firebase/firestore";
-
-await addDoc(collection(db, "teachers"), {
-schoolId: auth.currentUser.uid,
-name: teacherName,
-phone: teacherPhone,
-createdAt: new Date()
-});
-
 </script>
-
 </body>
 </html>

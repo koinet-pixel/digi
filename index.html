@@ -165,20 +165,20 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebas
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-const firebaseConfig = {
-apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
-authDomain: "digischool-90ea0.firebaseapp.com",
-projectId: "digischool-90ea0",
-storageBucket: "digischool-90ea0.firebasestorage.app",
-messagingSenderId: "63814149016",
-appId: "1:63814149016:web:d1c508af4c210d2a36c1ed"
-};
+ const firebaseConfig = {
+    apiKey: "AIzaSyB8HwfE9-ObuCZbaWQ1Z2L8F3kL_Sv8EVY",
+    authDomain: "digischool-90ea0.firebaseapp.com",
+    projectId: "digischool-90ea0",
+    storageBucket: "digischool-90ea0.firebasestorage.app",
+    messagingSenderId: "63814149016",
+    appId: "1:63814149016:web:d1c508af4c210d2a36c1ed",
+    measurementId: "G-YRHM99F3L4"
+  };
+
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const county = document.getElementById("county").value;
-
 
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
 e.preventDefault();
@@ -191,8 +191,8 @@ const level = document.getElementById("level").value;
 const county = document.getElementById("county").value;
 const product = document.getElementById("product").value;
 const population = document.getElementById("population").value;
-const password = document.getElementById("password").value.trim();
-const confirmPassword = document.getElementById("confirmPassword").value.trim();
+const password = document.getElementById("password").value;
+const confirmPassword = document.getElementById("confirmPassword").value;
 
 if (password !== confirmPassword) {
 alert("Passwords do not match!");
@@ -203,7 +203,8 @@ try {
 
 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-const schoolData = {
+// Save school data in Firestore
+await setDoc(doc(db, "schools", userCredential.user.uid), {
 schoolName,
 email,
 phone,
@@ -213,20 +214,18 @@ county,
 product,
 population,
 createdAt: new Date()
-};
-
-await setDoc(doc(db, "schools", userCredential.user.uid), schoolData);
+});
 
 alert("Registration successful!");
-window.location.href = "login.html";
+
+// 👉 Go directly to dashboard
+window.location.href = "user-dashboard.html";
 
 } catch (error) {
-alert("Error: " + error.message);
+alert(error.message);
 }
 
 });
-
-
 
 </script>
 </body>
